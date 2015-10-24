@@ -1,15 +1,16 @@
 var React = require('react'),
 	FeedForm = require('./FeedForm'),
 	FeedList = require('./FeedList'),
-	ShowAddButton = require('./ShowAddButton');
+	ShowAddButton = require('./ShowAddButton'),
+	_ = require('lodash');
 
 var Feed = React.createClass({
 
 	getInitialState: function(){
 		var FEED_ITEMS = [
-			{ key: '1', title: 'Realtime data!', description: 'Firebase is cool', voteCount: 49 },
-			{ key: '2', title: 'JavaScript is fun', description: 'Lexical scoping FTW', voteCount: 34},
-			{ key: '3', title: 'Coffee makes you awake', description: 'Drink responsibly', voteCount: 15},
+			{ myKey: 0, title: 'Realtime data!', description: 'Firebase is cool', voteCount: 49 },
+			{ myKey: 1, title: 'JavaScript is fun', description: 'Lexical scoping FTW', voteCount: 34},
+			{ myKey: 2, title: 'Coffee makes you awake', description: 'Drink responsibly', voteCount: 15}
 		];
 		return {
 			items: FEED_ITEMS,
@@ -18,11 +19,31 @@ var Feed = React.createClass({
 	},
 
 	onNewItem: function(newItem){
+		newItem.myKey = this.state.items.length;
+
 		var newItems = this.state.items.concat([newItem]);
+
+		console.log(this.state.items, [newItems]);
 
 		this.setState({
 			items: newItems,
 			formDisplayed: false
+		});
+	},
+
+	onVote: function(item){
+		var items = _.uniq(this.state.items);
+
+		var index = _.findIndex(items, function(feedItems){
+			return feedItems.myKey === item.myKey;
+		});
+
+		items[index] = item;
+
+		var newItems = items;
+
+		this.setState({
+			items: newItems
 		});
 	},
 
@@ -42,7 +63,7 @@ var Feed = React.createClass({
 
 				<FeedForm displayed={this.state.formDisplayed} onNewItem={this.onNewItem} />
 
-				<FeedList items={this.state.items} />
+				<FeedList items={this.state.items} onVote={this.onVote} />
 
 			</div>
 		);

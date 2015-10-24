@@ -7,7 +7,7 @@ var gulp = require('gulp'),
 
 
 gulp.task('watchAll', function(){
-	gulp.watch('./**/*.js', ['webpack']);
+	//gulp.watch(['./**/*.js',  '!./node_modules/**'], ['webpack']);
 	gulp.watch('./app/*.html', ['html']);
 });
 

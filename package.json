@@ -17,6 +17,7 @@
     "gulp-exec": "^2.1.2",
     "gulp-minify-html": "^1.0.4",
     "gulp-shell": "^0.5.0",
+    "lodash": "^3.10.1",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
     "webpack": "^1.12.2"
