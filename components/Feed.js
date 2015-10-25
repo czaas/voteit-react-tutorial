@@ -46,6 +46,9 @@ var Feed = React.createClass({
 	onNewItem: function(newItem){
 		var ref = new Firebase('https://burning-heat-7998.firebaseio.com/feed');
 		ref.push(newItem);
+		this.setState({
+			formDisplayed: false
+		});
 	},
 
 	onVote: function(item){
