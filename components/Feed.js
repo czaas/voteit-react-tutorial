@@ -2,49 +2,62 @@ var React = require('react'),
 	FeedForm = require('./FeedForm'),
 	FeedList = require('./FeedList'),
 	ShowAddButton = require('./ShowAddButton'),
-	_ = require('lodash');
+	_ = require('lodash'),
+	Firebase = require('firebase');
 
 var Feed = React.createClass({
 
+	loadData: function(){
+		var ref = new Firebase('https://burning-heat-7998.firebaseio.com/feed');
+
+		ref.on('value', function(snapshot){
+			var items = [];
+			snapshot.forEach(function(itemSnapshot){
+				var item = itemSnapshot.val();
+				item.key = itemSnapshot.name();
+
+				items.push(item);
+			});
+
+			this.setState({
+				items: items
+			});
+		}.bind(this));
+	},
+
+	componentDidMount: function(){
+		this.loadData();
+	},
+
 	getInitialState: function(){
-		var FEED_ITEMS = [
-			{ myKey: 0, title: 'Realtime data!', description: 'Firebase is cool', voteCount: 49 },
-			{ myKey: 1, title: 'JavaScript is fun', description: 'Lexical scoping FTW', voteCount: 34},
-			{ myKey: 2, title: 'Coffee makes you awake', description: 'Drink responsibly', voteCount: 15}
-		];
 		return {
-			items: FEED_ITEMS,
+			items: [],
 			formDisplayed: false
 		}
 	},
 
 	onNewItem: function(newItem){
-		newItem.myKey = this.state.items.length;
-
-		var newItems = this.state.items.concat([newItem]);
-
-		console.log(this.state.items, [newItems]);
-
-		this.setState({
-			items: newItems,
-			formDisplayed: false
-		});
+		var ref = new Firebase('https://burning-heat-7998.firebaseio.com/feed');
+		ref.push(newItem);
 	},
 
 	onVote: function(item){
-		var items = _.uniq(this.state.items);
+		var ref = new Firebase('https://burning-heat-7998.firebaseio.com/feed').child(item.key);
 
-		var index = _.findIndex(items, function(feedItems){
-			return feedItems.myKey === item.myKey;
-		});
+		ref.update(item);
+		// var items = _.uniq(this.state.items);
 
-		items[index] = item;
+		// var index = _.findIndex(items, function(feedItems){
+		// 	return feedItems.myKey === item.myKey;
+		// });
 
-		var newItems = items;
+		// items[index] = item;
 
-		this.setState({
-			items: newItems
-		});
+		// var newItems = items;
+
+		// this.setState({
+		// 	items: newItems
+		// });
 	},
 
 	onToggleForm: function(){
