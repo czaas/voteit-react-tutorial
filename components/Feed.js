@@ -12,17 +12,24 @@ var Feed = React.createClass({
 
 		ref.on('value', function(snapshot){
 			var items = [];
+			var sorted = [];
+
 			snapshot.forEach(function(itemSnapshot){
 				var item = itemSnapshot.val();
-				item.key = itemSnapshot.name();
+				item.key = itemSnapshot.key();
 
 				items.push(item);
 			});
 
+			sorted = _.sortBy(items, function(item){
+				return -item.voteCount;
+			});
+
 			this.setState({
-				items: items
+				items: sorted
 			});
 		}.bind(this));
+
 	},
 
 	componentDidMount: function(){
@@ -43,21 +50,7 @@ var Feed = React.createClass({
 
 	onVote: function(item){
 		var ref = new Firebase('https://burning-heat-7998.firebaseio.com/feed').child(item.key);
-
 		ref.update(item);
-		// var items = _.uniq(this.state.items);
-
-		// var index = _.findIndex(items, function(feedItems){
-		// 	return feedItems.myKey === item.myKey;
-		// });
-
-		// items[index] = item;
-
-		// var newItems = items;
-
-		// this.setState({
-		// 	items: newItems
-		// });
 	},
 
 	onToggleForm: function(){

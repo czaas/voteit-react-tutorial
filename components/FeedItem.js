@@ -4,7 +4,7 @@ var FeedItem = React.createClass({
 
 	vote: function(newCount){
 		this.props.onVote({
-			myKey: this.props.myKey,
+			key: this.props.myKey,
 			title: this.props.title,
 			description: this.props.description,
 			voteCount: newCount
